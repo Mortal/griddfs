@@ -1,8 +1,17 @@
 # setup.py based on https://github.com/getsentry/milksnake
+import os
+import re
 from setuptools import setup
 
 
 NAME = 'griddfs'
+
+
+def get_version():
+    with open(os.path.join(os.path.dirname(__file__), 'Cargo.toml')) as fp:
+        version_line = next(line for line in fp if line.startswith('version'))
+    mo = re.match(r'version = "(.*)"', version_line)
+    return mo.group(1)
 
 
 def build_native(spec):
@@ -19,7 +28,7 @@ def build_native(spec):
 
 setup(
     name=NAME,
-    version='0.1.0',
+    version=get_version(),
     packages=[NAME],
     author='Mathias Rav',
     license='GPL3+',
