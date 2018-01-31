@@ -1,4 +1,8 @@
-
 /target/
 **/*.rs.bk
 Cargo.lock
+.*.swp
+/build
+/dist
+/griddfs.egg-info
+/version.mk
