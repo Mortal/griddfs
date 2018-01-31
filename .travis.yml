@@ -1,0 +1,27 @@
+notifications:
+  email: false
+matrix:
+  include:
+  - sudo: required
+    services:
+    - docker
+    env: DOCKER_IMAGE=quay.io/pypa/manylinux1_x86_64
+  - sudo: required
+    services:
+    - docker
+    env: DOCKER_IMAGE=quay.io/pypa/manylinux1_i686 PRE_CMD=linux32
+install:
+- docker pull $DOCKER_IMAGE
+script:
+- docker run --rm -v `pwd`:/work $DOCKER_IMAGE $PRE_CMD /work/travis/build-wheels.sh
+- ls wheelhouse/
+deploy:
+  provider: releases
+  api_key:
+    secure: BnDxq1vASI2xMgc0PYJ7NTcdgGRrFq/despDNMh7GusaRe67idzWoyScyxtJgPLto3jOzAzGfzZRs20zH1TXgbvDGl3b40LGOmJd+G0ApvBNvtkrs6457RqSzbg/aTHLu10fbyiMk4/vju+CTSznzMBRcThMQ7N+VuzQiYQJaufmz0P5vcuPzcKIPnhkbCWYLCCHYw96Fgngaoyiz4FZCc19I/adsRry+5BT1iljDaYnynejCGBg52f6Nu6fcLdUFIvMwgfD/OrCGd3Nf4WBHiOlGJW7Z06zEf4hG31sOW45FY5YzJRDu5G/fnQC8o4wDxwsxIYOva++j0ieHFiEsA4xaRR+TcfoT2z48iqF3rUlqTa+0URaF11ZyFLkNIxUYl13EGNLfzbsLZQnrYSt7TIHrJemHxGZPy0hJnSIThh1iU6DkBnPPOOj9YmU0BYM72ns3V++pP68zMFwSEnT2ltvv05ljgLa745FGLUzoI2HKlKw1Pgffckex298kq0ey1WePUxqNmMppZ3oWtHUsRCeBxPEGzTmPppZJPGN2l4Z8k1MoshTlmVgAPhy2quWboBo03aDowltBBMuOsCMxlKRtoYErRBBLge6p/SLoXadSxkNu2YM9lmacZSxWjaipWWeNGY9DodXJb5099oTHQ5FfGpRfQzUyrl/Sk1ETHg=
+  skip_cleanup: true
+  file_glob: true
+  file: wheelhouse/griddfs-*.whl
+  on:
+    repo: Mortal/griddfs
+    tags: true
