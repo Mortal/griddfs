@@ -27,7 +27,7 @@ impl Neighbor for (usize, usize) {
     }
 }
 
-pub fn dfs<'a>(dirs: Mat<'a>, sources: Rectangle, mut marks: Mat<'a>, mark: u8) -> Result<()> {
+pub fn dfs<'a>(dirs: Mat<'a, u8>, sources: Rectangle, mut marks: Mat<'a, u8>, mark: u8) -> Result<()> {
     for pos in sources {
         // println!("Visit src {:?} {}", pos, dirs[pos]);
         marks[pos] |= mark;

@@ -18,8 +18,8 @@ pub struct CRect {
     height: c_uint,
 }
 
-pub struct Mat<'a> {
-    data: &'a mut [u8],
+pub struct Mat<'a, T: 'a> {
+    data: &'a mut [T],
     rows: usize,
     cols: usize,
 }
@@ -31,9 +31,9 @@ pub struct Rectangle {
     height: usize,
 }
 
-impl<'a> Index<(usize, usize)> for Mat<'a> {
-    type Output = u8;
-    fn index(&self, index: (usize, usize)) -> &u8 {
+impl<'a, T> Index<(usize, usize)> for Mat<'a, T> {
+    type Output = T;
+    fn index(&self, index: (usize, usize)) -> &T {
         let (i, j) = index;
         if i >= self.rows || j >= self.cols {
             panic!("{},{} out of bounds {},{}", i, j, self.rows, self.cols);
@@ -43,8 +43,8 @@ impl<'a> Index<(usize, usize)> for Mat<'a> {
     }
 }
 
-impl<'a> IndexMut<(usize, usize)> for Mat<'a> {
-    fn index_mut(&mut self, index: (usize, usize)) -> &mut u8 {
+impl<'a, T> IndexMut<(usize, usize)> for Mat<'a, T> {
+    fn index_mut(&mut self, index: (usize, usize)) -> &mut T {
         let (i, j) = index;
         if i >= self.rows || j >= self.cols {
             panic!("{},{} out of bounds {},{}", i, j, self.rows, self.cols);
@@ -54,7 +54,7 @@ impl<'a> IndexMut<(usize, usize)> for Mat<'a> {
     }
 }
 
-impl<'a> Mat<'a> {
+impl<'a> Mat<'a, u8> {
     pub unsafe fn from_ptr_mut(p: *mut CMatrix) -> Self {
         let rows = (*p).rows as usize;
         let cols = (*p).cols as usize;
