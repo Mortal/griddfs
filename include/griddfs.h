@@ -20,10 +20,18 @@ struct griddfs_rect {
 
 void griddfs_init(void);
 
-void griddfs_dfs(struct griddfs_matrix * dirs,
-		 const struct griddfs_rect * sources,
-		 struct griddfs_matrix * marks,
-		 unsigned char mark,
-		 struct griddfs_error *);
+void griddfs_mark_downstream(
+		struct griddfs_matrix * dirs,
+		const struct griddfs_rect * sources,
+		struct griddfs_matrix * marks,
+		unsigned char mark,
+		struct griddfs_error *);
+
+void griddfs_mark_upstream(
+		struct griddfs_matrix * dirs,
+		const struct griddfs_rect * destinations,
+		struct griddfs_matrix * marks,
+		unsigned char mark,
+		struct griddfs_error *);
 
 void griddfs_free(char *);

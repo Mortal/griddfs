@@ -1,1 +1,1 @@
-from ._cabi import dfs
+from ._cabi import mark_downstream, mark_upstream

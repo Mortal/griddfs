@@ -111,6 +111,12 @@ impl Rectangle {
             bottom: self.top + self.height,
         }
     }
+
+    pub fn contains(&self, index: (usize, usize)) -> bool {
+        let (i, j) = index;
+        self.top <= i && i < self.top + self.height &&
+            self.left <= j && j < self.left + self.width
+    }
 }
 
 impl IntoIterator for Rectangle {
@@ -118,5 +124,16 @@ impl IntoIterator for Rectangle {
     type IntoIter = RectangleIterator;
     fn into_iter(self) -> RectangleIterator {
         self.iter()
+    }
+}
+
+impl<'a, T> Mat<'a, T> {
+    pub fn rect(&self) -> Rectangle {
+        Rectangle {
+            top: 0,
+            left: 0,
+            width: self.cols,
+            height: self.rows,
+        }
     }
 }

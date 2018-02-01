@@ -30,11 +30,21 @@ def to_crect(rect):
     return res
 
 
-def dfs(dirs, sources, marks=None, mark=1):
+def mark_downstream(dirs, rect, marks=None, mark=1):
     dirs = np.asarray(dirs, dtype=np.uint8)
     if marks is None:
         marks = np.zeros_like(dirs)
     assert dirs.shape == marks.shape
-    rustcall(lib.griddfs_dfs, to_cmatrix(dirs), to_crect(sources),
+    rustcall(lib.griddfs_mark_downstream, to_cmatrix(dirs), to_crect(rect),
+             to_cmatrix(marks), mark)
+    return marks
+
+
+def mark_upstream(dirs, rect, marks=None, mark=1):
+    dirs = np.asarray(dirs, dtype=np.uint8)
+    if marks is None:
+        marks = np.zeros_like(dirs)
+    assert dirs.shape == marks.shape
+    rustcall(lib.griddfs_mark_upstream, to_cmatrix(dirs), to_crect(rect),
              to_cmatrix(marks), mark)
     return marks

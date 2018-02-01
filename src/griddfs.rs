@@ -27,7 +27,7 @@ impl Neighbor for (usize, usize) {
     }
 }
 
-pub fn dfs<'a>(dirs: Mat<'a, u8>, sources: Rectangle, mut marks: Mat<'a, u8>, mark: u8) -> Result<()> {
+pub fn mark_downstream<'a>(dirs: Mat<'a, u8>, sources: Rectangle, mut marks: Mat<'a, u8>, mark: u8) -> Result<()> {
     for pos in sources {
         // println!("Visit src {:?} {}", pos, dirs[pos]);
         marks[pos] |= mark;
@@ -39,6 +39,29 @@ pub fn dfs<'a>(dirs: Mat<'a, u8>, sources: Rectangle, mut marks: Mat<'a, u8>, ma
             }
             marks[pos] |= mark;
             pos_opt = pos.neighbor(dirs[pos]);
+        }
+    }
+    Ok(())
+}
+
+pub fn mark_upstream<'a>(dirs: Mat<'a, u8>, destinations: Rectangle, mut marks: Mat<'a, u8>, mark: u8) -> Result<()> {
+    for pos in destinations.iter() {
+        marks[pos] |= mark;
+    }
+    for source in dirs.rect() {
+        let mut pos_opt = Some(source);
+        while let Some(pos) = pos_opt {
+            if marks[pos] & mark != 0 {
+                break;
+            }
+            pos_opt = pos.neighbor(dirs[pos]);
+        }
+        if let Some(dest) = pos_opt {
+            let mut pos = source;
+            while pos != dest {
+                marks[pos] |= mark;
+                pos = pos.neighbor(dirs[pos]).unwrap();
+            }
         }
     }
     Ok(())
