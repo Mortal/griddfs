@@ -2,6 +2,7 @@ use std::ops::{Index, IndexMut};
 use std::iter::{Iterator, IntoIterator};
 use std::os::raw::{c_uchar, c_uint};
 use std::slice;
+use bridge::FromC;
 
 #[repr(C)]
 pub struct CMatrix {
@@ -54,8 +55,8 @@ impl<'a, T> IndexMut<(usize, usize)> for Mat<'a, T> {
     }
 }
 
-impl<'a> Mat<'a, u8> {
-    pub unsafe fn from_ptr_mut(p: *mut CMatrix) -> Self {
+impl<'a> FromC<*mut CMatrix> for Mat<'a, u8> {
+    unsafe fn from_c(p: *mut CMatrix) -> Self {
         let rows = (*p).rows as usize;
         let cols = (*p).cols as usize;
         Mat {
@@ -92,8 +93,8 @@ impl Iterator for RectangleIterator {
     }
 }
 
-impl Rectangle {
-    pub unsafe fn from_ptr(p: *const CRect) -> Self {
+impl FromC<*const CRect> for Rectangle {
+    unsafe fn from_c(p: *const CRect) -> Self {
         Rectangle {
             top: (*p).top as usize,
             left: (*p).left as usize,
@@ -101,7 +102,9 @@ impl Rectangle {
             height: (*p).height as usize,
         }
     }
+}
 
+impl Rectangle {
     pub fn iter(&self) -> RectangleIterator {
         RectangleIterator {
             i: self.top,

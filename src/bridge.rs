@@ -86,3 +86,24 @@ macro_rules! export (
         }
     );
 );
+
+pub trait FromC<T> {
+    unsafe fn from_c(T) -> Self;
+}
+
+impl<T, U> FromC<T> for U where U: From<T> {
+    unsafe fn from_c(t: T) -> Self {
+        From::from(t)
+    }
+}
+
+#[allow(unused_macros)]
+#[macro_use]
+macro_rules! export_using_from_c (
+    ($n:ident($($an:ident: $aty:ty),*) -> Result<$rv:ty> = $fn:ident) => (
+        export!($n($($an: $aty),*) -> Result<$rv>
+        {
+            $fn($(FromC::from_c($an)),*)
+        });
+    );
+);
